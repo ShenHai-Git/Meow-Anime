@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>喵喵动漫 · 电脑与安卓双端</title>
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap">
+<style>
+  :root{
+    --bg:#0b0912;
+    --bg-2:#120e1c;
+    --ink:#f5f2fa;
+    --sub:#a79cb6;
+    --mute:#776c86;
+    --line:rgba(255,255,255,.12);
+    --violet:#8b5cf6;
+    --pink:#ec4899;
+    --rose:#f43f5e;
+    --soft:rgba(255,255,255,.05);
+    --watermark:rgba(255,255,255,.04);
+    --grad:linear-gradient(100deg,#8b5cf6,#ec4899 55%,#f43f5e);
+  }
+  html[data-theme="light"]{
+    --bg:#f4f1fa;
+    --bg-2:#ffffff;
+    --ink:#211a2e;
+    --sub:#5b5070;
+    --mute:#8a7f99;
+    --line:rgba(70,35,130,.16);
+    --soft:rgba(124,58,237,.06);
+    --watermark:rgba(124,58,237,.07);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.6;overflow-x:hidden;
+    transition:background .25s,color .25s;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px}
+
+  /* ===== 顶栏（无菜单） ===== */
+  .topbar{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:18px 32px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px}
+  .brand img{width:34px;height:34px;border-radius:10px}
+  .brand em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .top-actions{display:flex;align-items:center;gap:12px}
+  .mini-btn{font-size:13px;font-weight:600;padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:var(--soft)}
+  .switch{width:46px;height:26px;border-radius:13px;background:var(--soft);border:1px solid var(--line);position:relative;cursor:pointer}
+  .switch i{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;transition:transform .2s}
+  html[data-theme="light"] .switch i{transform:translateX(20px)}
+
+  /* ===== 第一屏 分屏 Hero ===== */
+  .hero{position:relative}
+  .hero-in{max-width:1240px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;min-height:100vh;align-items:center}
+  .hero::before{content:"喵";position:absolute;left:-2%;top:50%;transform:translateY(-50%);font-size:46vw;font-weight:900;color:var(--watermark);line-height:1;pointer-events:none;user-select:none}
+  .hero-left{display:flex;flex-direction:column;justify-content:center;padding:120px 0 60px 0;position:relative;z-index:2}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--pink);font-weight:700;margin-bottom:26px}
+  .kicker::before{content:"";width:34px;height:1px;background:var(--pink)}
+  .hero h1{font-size:clamp(40px,5.4vw,66px);font-weight:900;letter-spacing:-1.5px;line-height:1.08;margin-bottom:24px}
+  .hero h1 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .hero p{font-size:18px;color:var(--sub);max-width:460px;margin-bottom:36px}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:40px}
+  .btn{display:inline-flex;align-items:center;gap:9px;border-radius:13px;padding:15px 28px;font-size:15px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:transform .15s,filter .15s}
+  .btn-fill{background:var(--grad);color:#fff;box-shadow:0 20px 45px rgba(236,72,153,.28)}
+  .btn-fill:hover{transform:translateY(-2px);filter:brightness(1.08)}
+  .btn-line{border-color:var(--line);background:var(--soft)}
+  .btn-line:hover{background:rgba(255,255,255,.1)}
+  .hero-meta{display:flex;gap:38px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:26px}
+  .hero-meta .m{font-size:13px;color:var(--mute)}
+  .hero-meta .m b{display:block;font-size:21px;color:var(--ink);font-weight:800}
+  .hero-right{position:relative;display:flex;align-items:center;justify-content:center}
+  .hero-right .pc{width:100%;border-radius:22px;border:1px solid var(--line);box-shadow:0 40px 80px rgba(0,0,0,.55);overflow:hidden;transform:rotate(-2deg)}
+  .hero-right .pc img{width:100%;display:block}
+  .hero-right .phone{position:absolute;right:4%;bottom:8%;width:168px;border-radius:26px;border:1px solid var(--line);box-shadow:0 26px 55px rgba(0,0,0,.6);overflow:hidden;transform:rotate(4deg)}
+  .hero-right .phone img{width:100%;display:block}
+
+  /* ===== 章节通用 ===== */
+  section{padding:100px 0}
+  .sec-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:56px;flex-wrap:wrap}
+  .sec-head .no{font-size:14px;color:var(--mute);letter-spacing:2px}
+  .sec-head h2{font-size:clamp(28px,3.4vw,40px);font-weight:900;letter-spacing:-1px}
+  .sec-head p{color:var(--sub);max-width:420px}
+
+  /* ===== Showcase 出血图文 ===== */
+  .showcase{padding:0}
+  .show-row{display:grid;grid-template-columns:1.2fr .8fr;gap:48px;align-items:center;padding:64px 0;border-top:1px solid var(--line)}
+  .show-row.flip{grid-template-columns:.8fr 1.2fr}
+  .show-row.flip .show-media{order:2}
+  .show-media{border-radius:22px;border:1px solid var(--line);overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.4)}
+  .show-media img{width:100%;display:block}
+  .show-media.phone img{max-width:240px;margin:0 auto;display:block;border-radius:24px}
+  .show-copy .tag{font-size:13px;color:var(--pink);font-weight:700;letter-spacing:2px;margin-bottom:14px}
+  .show-copy h3{font-size:28px;font-weight:800;margin-bottom:14px;letter-spacing:-.5px}
+  .show-copy p{color:var(--sub)}
+
+  /* ===== Ledger 清单 ===== */
+  .ledger{border-top:1px solid var(--line)}
+  .row{display:grid;grid-template-columns:90px 1fr 1.1fr;gap:30px;padding:34px 0;border-bottom:1px solid var(--line);align-items:baseline}
+  .row .idx{font-size:22px;font-weight:900;color:var(--mute)}
+  .row h3{font-size:21px;font-weight:700}
+  .row p{color:var(--sub);font-size:15px}
+  .row:hover .idx{color:var(--pink)}
+
+  /* ===== FAQ 两列 ===== */
+  .faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 56px}
+  .qa{padding:30px 0;border-top:1px solid var(--line)}
+  .qa h3{font-size:18px;font-weight:700;margin-bottom:10px}
+  .qa p{color:var(--sub);font-size:14.5px}
+
+  /* ===== 页脚 ===== */
+  footer{border-top:1px solid var(--line);padding:30px 0}
+  .foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;color:var(--mute);font-size:14px}
+
+  /* ===== 响应式 ===== */
+  @media (max-width:960px){
+    .hero-in{grid-template-columns:1fr;min-height:auto}
+    .hero-left{padding:110px 0 40px}
+    .hero-right{padding:0 0 50px}
+    .hero-right .pc{width:92%;margin:0 auto}
+    .hero-right .phone{right:8%;bottom:-10px}
+    .show-row,.show-row.flip{grid-template-columns:1fr;gap:24px}
+    .show-row.flip .show-media{order:0}
+    .row{grid-template-columns:56px 1fr;gap:16px}
+    .row p{grid-column:2}
+    .faq-grid{grid-template-columns:1fr}
+  }
+  @media (max-width:600px){
+    .wrap{padding:0 20px}
+    section{padding:60px 0}
+    .topbar{padding:14px 20px}
+    .mini-btn{display:none}
+    .plat{padding:44px 26px}
+    .row h3{font-size:18px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== 顶栏 ===== -->
+<div class="topbar">
+  <a class="brand" href="#top">
+    <img src="assets/logo.png" alt="喵喵动漫图标">
+    <em>喵喵动漫</em>
+  </a>
+  <div class="top-actions">
+    <a class="mini-btn" href="downloads/miaomiao-pc-setup.exe" download="miaomiao-pc-setup.exe">Windows</a>
+    <a class="mini-btn" href="downloads/miaomiao-android.apk" download="miaomiao-android.apk">安卓</a>
+    <button class="switch" id="themeToggle" aria-label="切换主题"><i id="knob">🌙</i></button>
+  </div>
+</div>
+
+<!-- ===== 第一屏 ===== -->
+<header class="hero" id="top">
+  <div class="hero-in">
+  <div class="hero-left">
+    <div class="kicker">Anime Player · 双端</div>
+    <h1>追番这件事，<br><span class="g">电脑手机都顺手</span></h1>
+    <p>喵喵动漫把番剧浏览、分类、更新与排行收进同一个客户端。桌面大屏一套界面，随身手机一套界面，按设备各取所需。</p>
+    <div class="hero-cta">
+      <a class="btn btn-fill" href="downloads/miaomiao-pc-setup.exe" download="miaomiao-pc-setup.exe">💻 获取 Windows 版</a>
+      <a class="btn btn-line" href="downloads/miaomiao-android.apk" download="miaomiao-android.apk">📱 获取安卓版</a>
+    </div>
+    <div class="hero-meta">
+      <div class="m"><b>v1.0.0</b>当前版本</div>
+      <div class="m"><b>2 个</b>客户端平台</div>
+      <div class="m"><b>深色</b>观看界面</div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="pc"><img src="assets/pc.png" alt="喵喵动漫电脑版界面"></div>
+    <div class="phone"><img src="assets/phone.png" alt="喵喵动漫安卓版界面"></div>
+  </div>
+  </div>
+</header>
+
+<!-- ===== 产品样貌 ===== -->
+<section class="showcase">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>两套界面，各就各位</h2>
+      <p>同一套内容，分别为横屏桌面与竖屏手机重新排布。</p>
+    </div>
+    <div class="show-row">
+      <div class="show-media"><img src="assets/pc.png" alt="电脑版封面墙界面"></div>
+      <div class="show-copy">
+        <div class="tag">DESKTOP</div>
+        <h3>大屏看封面墙更从容</h3>
+        <p>电脑端横向铺开番剧封面与详情，导航在顶部，适合坐下来连续观看，选片和追剧都在一个窗口里完成。</p>
+      </div>
+    </div>
+    <div class="show-row flip">
+      <div class="show-media phone"><img src="assets/phone.png" alt="安卓版竖屏界面"></div>
+      <div class="show-copy">
+        <div class="tag">ANDROID</div>
+        <h3>竖屏单手也能翻到底</h3>
+        <p>手机端按握持习惯重排，首页、分类、时间表、排行收进底部导航，碎片时间点开就能继续看。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 亮点清单 ===== -->
+<section class="ledger" id="features">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>用下来的六个理由</h2>
+      <div class="no">01 — 06</div>
+    </div>
+    <div class="row">
+      <div class="idx">01</div>
+      <h3>更新追踪</h3>
+      <p>今日更新集中呈现，追更的作品有新内容时一眼可见，不必挨个分类翻找。</p>
+    </div>
+    <div class="row">
+      <div class="idx">02</div>
+      <h3>题材分类</h3>
+      <p>热血、奇幻、恋爱、运动、校园等题材按类归拢，顺着口味就能挖到想追的新番。</p>
+    </div>
+    <div class="row">
+      <div class="idx">03</div>
+      <h3>周榜排行</h3>
+      <p>按星期排布更新时间表，搭配热门排行，当下大家在看什么很快就能摸清楚。</p>
+    </div>
+    <div class="row">
+      <div class="idx">04</div>
+      <h3>观看界面</h3>
+      <p>深色底色减少视觉干扰，封面与标题排版清晰，打开作品后更容易进入观看状态。</p>
+    </div>
+    <div class="row">
+      <div class="idx">05</div>
+      <h3>双端形态</h3>
+      <p>电脑横屏与手机竖屏分别适配，不是简单拉伸同一张界面，操作位置都按设备调整过。</p>
+    </div>
+    <div class="row">
+      <div class="idx">06</div>
+      <h3>轻量导航</h3>
+      <p>首页、分类、排行层级浅，从打开到抵达内容路径短，第一次使用也不容易迷路。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 问答 ===== -->
+<section id="faq">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>安装前先看看</h2>
+      <p>几个常见问题集中在这里。</p>
+    </div>
+    <div class="faq-grid">
+      <div class="qa">
+        <h3>支持哪些系统？</h3>
+        <p>电脑版提供 Windows 10 / 11（64 位）安装程序；手机版为安卓 APK，可在 Android 手机安装。暂不提供 macOS、Linux 与 iOS 版本。</p>
+      </div>
+      <div class="qa">
+        <h3>电脑版怎么安装？</h3>
+        <p>下载 exe 安装程序后双击运行，按安装向导提示完成，结束后从桌面图标或开始菜单启动即可。</p>
+      </div>
+      <div class="qa">
+        <h3>安卓版提示“未知来源”？</h3>
+        <p>在系统弹出的安装提示中允许本次从该来源安装，返回继续安装即可；装完后可在设置里收回该权限。</p>
+      </div>
+      <div class="qa">
+        <h3>后续版本如何更新？</h3>
+        <p>新版本会发布在本下载页，届时回到本页下载对应平台的最新安装包，覆盖安装即可。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 页脚 ===== -->
+<footer>
+  <div class="wrap foot">
+    <div>© 2026 喵喵动漫 · 保留所有权利</div>
+    <div>Windows / Android 双端客户端</div>
+  </div>
+</footer>
+
+<script>
+  const root = document.documentElement;
+  const toggle = document.getElementById('themeToggle');
+  const knob = document.getElementById('knob');
+  function applyTheme(t){
+    root.setAttribute('data-theme', t);
+    knob.textContent = t === 'dark' ? '☀️' : '🌙';
+    try{ localStorage.setItem('miaomiao-theme', t); }catch(e){}
+  }
+  let saved = 'dark';
+  try{ saved = localStorage.getItem('miaomiao-theme') || 'dark'; }catch(e){}
+  applyTheme(saved);
+  toggle.addEventListener('click', () => {
+    applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+</script>
+</body>
+</html>
